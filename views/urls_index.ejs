@@ -1,0 +1,26 @@
+<!-- views/urls_index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Tiny App</title>
+  </head>
+
+  <body class="container">
+
+    <main>
+      <div class="jumbotron">
+        <h1>This is great</h1>
+        <p>Welcome to templating using EJS</p>
+        <h2>URL Database</h2>
+        <ul>
+          <% for (var index in urls) { %>
+            <li><%= index %> - <%= urls[index] %></li>
+          <% }; %>
+        </ul>
+
+
+      </div>
+    </main>
+  </body>
+</html>
