@@ -1,0 +1,19 @@
+<!-- views/urls_show.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Tiny App</title>
+  </head>
+
+  <body class="container">
+    <header>
+      <% include ./partials/_header %>
+    </header>
+    <main>
+      <div class="jumbotron">
+      <p><a href="#"><%= shortURL %> - <%= url[shortURL] %></a></p>
+      </div>
+    </main>
+  </body>
+</html>

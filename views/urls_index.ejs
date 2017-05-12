@@ -7,7 +7,9 @@
   </head>
 
   <body class="container">
-
+    <header>
+      <% include ./partials/_header %>
+    </header>
     <main>
       <div class="jumbotron">
         <h1>This is great</h1>
@@ -15,7 +17,7 @@
         <h2>URL Database</h2>
         <ul>
           <% for (var index in urls) { %>
-            <li><%= index %> - <%= urls[index] %></li>
+            <li><a href="#"><%= index %></a> - <a href="#"><%= urls[index] %></a></li>
           <% }; %>
         </ul>
 
