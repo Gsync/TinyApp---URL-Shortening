@@ -1,8 +1,10 @@
 var express = require("express");
+var cookieParser = require('cookie-parser')
 var app = express();
 app.set("view engine", "ejs");
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser())
 
 var PORT = process.env.PORT || 8080; //default port 8080
 
@@ -29,20 +31,28 @@ app.get("/", (req, res) => {
 
 //Render endpoint urls_index from /urls in the address bar
 app.get("/urls", (req, res) => {
-  let templateVars = {urls : urlDatabase};
+  let templateVars = {
+    urls : urlDatabase,
+    username: req.cookies["username"]
+  };
   res.render("urls_index", templateVars);
 });
 
 //Get new URL
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let templateVars = {
+    urls : urlDatabase,
+    username: req.cookies["username"]
+  };
+  res.render("urls_new", templateVars);
 });
 
 //Get input from address bar to assign shortURL
 app.get("/urls/:id", (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
-    url: urlDatabase
+    url: urlDatabase,
+    username: req.cookies["username"]
   };
   res.render("urls_show", templateVars);
 });
@@ -64,8 +74,20 @@ app.get("/u/:shortURL", (req, res) => {
   if (!longURL) {
       res.status(404).send('URL not found!');
     } else {
-      res.redirect(303, longURL);
+      res.redirect(longURL);
     }
+});
+
+//login Route
+app.post("/login", (req, res) => {
+  res.cookie('username', req.body.username);//assign username to cookie
+  res.redirect("/urls");
+});
+
+//logout Route
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');//clear cookies
+  res.redirect("/urls");
 });
 
 //Delete a URL post
@@ -78,7 +100,7 @@ app.post("/urls/:id/delete", (req, res) => {
 //Update a URL post
 app.post("/urls/:id", (req, res) => {
 
-  urlDatabase[req.params.id] = req.body.longURL;//delete url index
+  urlDatabase[req.params.id] = req.body.longURL;
   res.redirect("/urls"); //redirect to urls index page
 });
 
