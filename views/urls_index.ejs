@@ -12,12 +12,16 @@
     </header>
     <main>
       <div class="jumbotron">
-        <h1>This is great</h1>
+        <h1>URL Shortening</h1>
         <p>Welcome to templating using EJS</p>
         <h2>URL Database</h2>
         <ul>
           <% for (var index in urls) { %>
-            <li><a href="#"><%= index %></a> - <a href="#"><%= urls[index] %></a></li>
+            <li><a href="#"><%= index %></a> - <a href="#"><%= urls[index] %></a>
+              <form action="/urls/<%= index %>/delete" method="POST">
+                <button>Delete</button>
+              </form>
+            </li>
           <% }; %>
         </ul>
 
