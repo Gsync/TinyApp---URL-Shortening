@@ -65,6 +65,11 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+//Login Page Get Request
+app.get("/login", (req, res) => {
+  res.render("urls_login");
+});
+
 //Register a user
 app.get("/register", (req, res) => {
   //pass the variables to regiter ejs template
