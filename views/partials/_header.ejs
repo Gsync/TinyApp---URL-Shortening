@@ -2,10 +2,10 @@
 
 <h1>Tiny App Project</h1>
 
-<% if(!username){ %>
+<% if(!user){ %>
 <a href="/register">Register</a> | <a href="/login">Login</a>
  <% } else { %>
-<h3>User: <%= username %></h3>
+<h3>User: <%= user.email %></h3>
 <form action="/logout" method="POST">
   <input type="submit" value="Logout">
 </form>
