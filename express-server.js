@@ -114,11 +114,16 @@ app.post("/register", (req, res) => {
 
 //Get new URL
 app.get("/urls/new", (req, res) => {
+  let user_id = req.cookies["user_id"];
   let templateVars = {
     urls : urlDatabase,
-    user: userDatabase[req.cookies["user_id"]]
+    user: userDatabase[user_id]
   };
+if (user_id) {
   res.render("urls_new", templateVars);
+} else {
+  res.render("urls_login");
+}
 });
 
 //Get input from address bar to assign shortURL
