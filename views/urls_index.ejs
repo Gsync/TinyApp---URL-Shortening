@@ -17,7 +17,7 @@
         <h2>URL Database</h2>
         <ul>
           <% for (var index in urls) { %>
-            <li><a href="#"><%= index %></a> - <a href="#"><%= urls[index] %></a>
+            <li><a href="#"><%= index %></a> - <a href="#"><%= urls[index].site %></a>
               <form action="/urls/<%= index %>/delete" method="POST">
                 <button>Delete</button>
               </form>

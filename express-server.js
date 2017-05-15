@@ -10,8 +10,22 @@ const PORT = process.env.PORT || 8080; //default port 8080
 
 //URL Object to be used as a data store
 const urlDatabase = {
-  "b2xVn2" : "http://www.lighthouselabs.ca",
-  "9sm5sK" : "http://www.google.com"
+  "b2xVn2" : {
+              site: "http://www.lighthouselabs.ca",
+              userID: "user2"
+              },
+  "9sm5sK" : {
+              site: "http://www.google.com",
+              userID: "user3"
+              },
+  "9sm5sV" : {
+              site: "http://www.yahoo.com",
+              userID: "user3"
+              },
+  "9sv5sK" : {
+              site: "http://www.msn.com",
+              userID: "user2"
+              }
 }
 
 //Users Object to be used as a users database
@@ -128,28 +142,37 @@ if (user_id) {
 
 //Get input from address bar to assign shortURL
 app.get("/urls/:id", (req, res) => {
-  let templateVars = {
-    shortURL: req.params.id,
-    url: urlDatabase,
-    user: userDatabase[req.cookies["user_id"]]
-  };
-  res.render("urls_show", templateVars);
+
+  if (urlDatabase[req.params.id].userID === req.cookies["user_id"]) {
+
+    let templateVars = {
+        shortURL: req.params.id,
+        url: urlDatabase,
+        user: userDatabase[req.cookies["user_id"]]
+    };
+
+    res.render("urls_show", templateVars);
+
+  } else {
+
+    res.status(403).send("You do not have rights to edit this URL!");
+  }
 });
 
 //Add a new URL post
 app.post("/urls", (req, res) => {
-  console.log(req.body.longURL); //debug statement to see post parameters
+  //console.log(req.body.longURL); //debug statement to see post parameters
   let shortURL = generateRandomString(); //generate random string and assign to shortURL
-  urlDatabase[shortURL] = req.body.longURL; //pass the shortURL and longURL to urlDatabase
-      res.redirect(urlDatabase[shortURL]);
+  urlDatabase[shortURL] = {site: req.body.longURL}; //pass the shortURL and longURL to urlDatabase
+      res.redirect("/urls");
 });
 
 //Render the redirect to shortURL
 app.get("/u/:shortURL", (req, res) => {
 
-  let longURL = urlDatabase[req.params.shortURL];
+  let longURL = urlDatabase[req.params.shortURL].site;
 
-  console.log(urlDatabase, req.params.shortURL)
+  //console.log(urlDatabase, req.params.shortURL)
   if (!longURL) {
       res.status(404).send('URL not found!');
     } else {
@@ -163,7 +186,7 @@ app.post("/login", (req, res) => {
   let userFound = false;
 
   for (var index in userDatabase) {
-    console.log(userDatabase[index].email);
+    //console.log(userDatabase[index].email);
 
     if (req.body.email === userDatabase[index].email && req.body.password === userDatabase[index].password) {
       userFound = true;
@@ -198,14 +221,22 @@ app.post("/logout", (req, res) => {
 //Delete a URL post
 app.post("/urls/:id/delete", (req, res) => {
 
-  delete urlDatabase[req.params.id];//delete url index
+  if (urlDatabase[req.params.id].userID === req.cookies["user_id"]) {
+
+    delete urlDatabase[req.params.id];//delete url index
+
+  } else {
+
+    res.status(403).send("You do not have rights to edit this URL!");
+  }
+
   res.redirect("/urls"); //redirect to urls index page
 });
 
 //Update a URL post
 app.post("/urls/:id", (req, res) => {
 
-  urlDatabase[req.params.id] = req.body.longURL;
+  urlDatabase[req.params.id].site = req.body.longURL;
   res.redirect("/urls"); //redirect to urls index page
 });
 

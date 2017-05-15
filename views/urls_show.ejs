@@ -14,7 +14,7 @@
       <div class="jumbotron">
         <form action="/urls/<%= shortURL %>" method="POST">
           <label for="longURL">Update shortURL(<%= shortURL %>): </label>
-      <input id="longURL" type="text" name="longURL" value="<%= url[shortURL] %>" placeholder="http://" style="width:300px">
+      <input id="longURL" type="text" name="longURL" value="<%= url[shortURL].site %>" placeholder="http://" style="width:300px">
       <input type="submit" value="Update">
         </form>
       </div>
