@@ -70,17 +70,38 @@ app.get("/", (req, res) => {
   res.end("Please check the url you need to acess!");
 });
 
+//Find URLs for User based on userid
+function urlsForUser(id) {
+
+  var userUrls = {};
+  for (index in urlDatabase) {
+    if (urlDatabase[index].userID === id ) {
+
+      userUrls[index] = urlDatabase[index];
+
+    }
+  }
+  return userUrls;
+}
+
+
 //Render endpoint urls_index
 app.get("/urls", (req, res) => {
 
-  const userId = req.cookies["user_id"];
+  let user_id = req.cookies["user_id"];
+  var userUrls = urlsForUser(user_id);
 
-  let templateVars = {
-    urls : urlDatabase,
-    user: userDatabase[userId]
+  if (user_id) {
+
+    urlsForUser(user_id);
+    var templateVars = {
+    urls : userUrls,
+    user: userDatabase[user_id]
   };
-
-  res.render("urls_index", templateVars);
+    res.render("urls_index", templateVars);
+  } else {
+    res.render("urls_login");
+  }
 });
 
 //Login Page Get Request
@@ -100,7 +121,7 @@ app.post("/register", (req, res) => {
   let userFound = false;
 
   for (var index in userDatabase) {
-    console.log(userDatabase[index].email);
+    //console.log(userDatabase[index].email);
 
     if (req.body.email === userDatabase[index].email) {
       userFound = true;
