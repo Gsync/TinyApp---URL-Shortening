@@ -4,7 +4,8 @@ const app = express();
 app.set("view engine", "ejs");
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser())
+app.use(cookieParser());
+const bcrypt = require('bcrypt');
 
 const PORT = process.env.PORT || 8080; //default port 8080
 
@@ -184,7 +185,8 @@ app.get("/urls/:id", (req, res) => {
 app.post("/urls", (req, res) => {
   //console.log(req.body.longURL); //debug statement to see post parameters
   let shortURL = generateRandomString(); //generate random string and assign to shortURL
-  urlDatabase[shortURL] = {site: req.body.longURL}; //pass the shortURL and longURL to urlDatabase
+  urlDatabase[shortURL] = {site: req.body.longURL, userID: req.cookies["user_id"]}; //pass the shortURL and longURL to urlDatabase
+  console.log('urldb:', urlDatabase);
       res.redirect("/urls");
 });
 
