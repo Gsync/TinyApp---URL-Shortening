@@ -1,11 +1,9 @@
 const express = require("express");
-//const cookieParser = require('cookie-parser')
 const cookieSession = require('cookie-session')
 const app = express();
 app.set("view engine", "ejs");
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
-//app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2']
@@ -190,10 +188,9 @@ app.get("/urls/:id", (req, res) => {
 
 //Add a new URL post
 app.post("/urls", (req, res) => {
-  //console.log(req.body.longURL); //debug statement to see post parameters
   let shortURL = generateRandomString(); //generate random string and assign to shortURL
   urlDatabase[shortURL] = {site: req.body.longURL, userID: req.session.user_id}; //pass the shortURL and longURL to urlDatabase
-      res.redirect("/urls");
+  res.redirect("/urls");
 });
 
 //Render the redirect to shortURL
@@ -201,7 +198,6 @@ app.get("/u/:shortURL", (req, res) => {
 
   let longURL = urlDatabase[req.params.shortURL].site;
 
-  //console.log(urlDatabase, req.params.shortURL)
   if (!longURL) {
       res.status(404).send('URL not found!');
     } else {
@@ -215,14 +211,13 @@ app.post("/login", (req, res) => {
   let userFound = false;
 
   for (var index in userDatabase) {
-    //console.log(userDatabase[index].email);
-// req.body.password === userDatabase[index].password
     if (req.body.email === userDatabase[index].email && bcrypt.compareSync(req.body.password, userDatabase[index].password)) {
       userFound = true;
       var user_id = userDatabase[index].id;
       req.session.user_id = user_id;
     }
   }
+
   if (!(req.body.email && req.body.password)) {
       res.status(403).send("Please enter a valid email or password!");
 
@@ -237,10 +232,10 @@ app.post("/login", (req, res) => {
       //console.log(userDatabase)
       res.redirect("/urls");}
 
-    else {
+  else {
       res.status(403).send("Please enter the correct email and password!");
 
-    }
+  }
 });
 
 //logout Route
