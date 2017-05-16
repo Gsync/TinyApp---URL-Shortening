@@ -137,10 +137,11 @@ app.post("/register", (req, res) => {
 
     else {
       let user_id = generateRandomString();
+      var hash_password = bcrypt.hashSync(req.body.password, 10);
       userDatabase[user_id] = {
         id: user_id,
         email:  req.body.email,
-        password:  req.body.password
+        password:  hash_password
       }
       res.cookie('user_id', user_id);
       //console.log(userDatabase)
@@ -186,7 +187,6 @@ app.post("/urls", (req, res) => {
   //console.log(req.body.longURL); //debug statement to see post parameters
   let shortURL = generateRandomString(); //generate random string and assign to shortURL
   urlDatabase[shortURL] = {site: req.body.longURL, userID: req.cookies["user_id"]}; //pass the shortURL and longURL to urlDatabase
-  console.log('urldb:', urlDatabase);
       res.redirect("/urls");
 });
 
@@ -210,8 +210,8 @@ app.post("/login", (req, res) => {
 
   for (var index in userDatabase) {
     //console.log(userDatabase[index].email);
-
-    if (req.body.email === userDatabase[index].email && req.body.password === userDatabase[index].password) {
+// req.body.password === userDatabase[index].password
+    if (req.body.email === userDatabase[index].email && bcrypt.compareSync(req.body.password, userDatabase[index].password)) {
       userFound = true;
       var user_id = userDatabase[index].id;
     }
@@ -220,10 +220,11 @@ app.post("/login", (req, res) => {
       res.status(403).send("Please enter a valid email or password!");
 
   } else if (userFound) {
+    var hash_password = bcrypt.hashSync(req.body.password, 10);
       userDatabase[user_id] = {
         id: user_id,
         email:  req.body.email,
-        password:  req.body.password
+        password:  hash_password
       }
       res.cookie('user_id', user_id);
       //console.log(userDatabase)
